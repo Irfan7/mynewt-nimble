@@ -282,6 +282,9 @@ hal_timer_chk_queue(struct nrf52_hal_timer *bsptimer)
             tcntr = nrf_read_timer_cntr(bsptimer->tmr_reg);
             delta = 0;
         }
+        /* corner case is not handled properly!!! 
+           case : when the current time is at the end of the (uint32 wrap count) value and the 
+           new scheduled item is on the next time frame then the compare value will be more than delta.  */
         if ((int32_t)(tcntr - timer->expiry) >= delta) {
             TAILQ_REMOVE(&bsptimer->hal_timer_q, timer, link);
             timer->link.tqe_prev = NULL;
